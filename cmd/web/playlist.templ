@@ -1,0 +1,463 @@
+package web
+
+templ PlaylistDashboard() {
+	@Base() {
+		<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
+			<!-- Header -->
+			<div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 sm:p-6 lg:p-8 rounded-lg mb-6 lg:mb-8">
+				<h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">🎵 Playwise - Music Playlist Engine</h1>
+				<p class="text-base sm:text-lg lg:text-xl opacity-90">Advanced Data Structures for Music Management</p>
+			</div>
+			<!-- Navigation Tabs -->
+			<div class="mb-6 lg:mb-8">
+				<div class="border-b border-gray-200">
+					<nav class="-mb-px flex flex-wrap gap-2 sm:gap-4 lg:space-x-8">
+						<button class="tab-button active py-2 px-2 sm:px-3 border-b-2 border-blue-500 font-medium text-xs sm:text-sm text-blue-600 whitespace-nowrap" data-tab="playlist">
+							📝 <span class="hidden sm:inline">Playlist</span> Management
+						</button>
+						<button class="tab-button py-2 px-2 sm:px-3 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="explorer">
+							🌳 <span class="hidden sm:inline">Music</span> Explorer
+						</button>
+						<button class="tab-button py-2 px-2 sm:px-3 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="history">
+							📊 History<span class="hidden sm:inline">& Stats</span>
+						</button>
+						<button class="tab-button py-2 px-2 sm:px-3 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="recommendations">
+							🎯 <span class="hidden sm:inline">Recommendations</span>
+						</button>
+						<button class="tab-button py-2 px-2 sm:px-3 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="dashboard">
+							📈 Dashboard
+						</button>
+					</nav>
+				</div>
+			</div>
+			<!-- Playlist Management Tab -->
+			<div id="playlist-tab" class="tab-content">
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+					<!-- Add Song Form -->
+					<div class="lg:col-span-1">
+						<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+							<h2 class="text-2xl font-bold mb-4 text-gray-800">➕ Add New Song</h2>
+							<form id="add-song-form" class="space-y-4" hx-post="/api/playlist/songs" hx-target="#playlist-container" hx-swap="innerHTML">
+								<div>
+									<label class="block text-sm font-medium text-gray-700 mb-2">Song Title *</label>
+									<input type="text" name="title" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Enter song title"/>
+								</div>
+								<div>
+									<label class="block text-sm font-medium text-gray-700 mb-2">Artist *</label>
+									<input type="text" name="artist" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Enter artist name"/>
+								</div>
+								<div>
+									<label class="block text-sm font-medium text-gray-700 mb-2">Album</label>
+									<input type="text" name="album" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Enter album name"/>
+								</div>
+								<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+									<div>
+										<label class="block text-sm font-medium text-gray-700 mb-2">Genre</label>
+										<select name="genre" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+											<option value="">Select Genre</option>
+											<option value="Rock">Rock</option>
+											<option value="Pop">Pop</option>
+											<option value="Hip Hop">Hip Hop</option>
+											<option value="Electronic">Electronic</option>
+											<option value="Jazz">Jazz</option>
+											<option value="Classical">Classical</option>
+											<option value="Country">Country</option>
+											<option value="R&B">R&B</option>
+										</select>
+									</div>
+									<div>
+										<label class="block text-sm font-medium text-gray-700 mb-2">Subgenre</label>
+										<input type="text" name="subgenre" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Alternative Rock"/>
+									</div>
+								</div>
+								<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+									<div>
+										<label class="block text-sm font-medium text-gray-700 mb-2">Mood</label>
+										<select name="mood" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+											<option value="">Select Mood</option>
+											<option value="Happy">Happy</option>
+											<option value="Sad">Sad</option>
+											<option value="Energetic">Energetic</option>
+											<option value="Relaxing">Relaxing</option>
+											<option value="Aggressive">Aggressive</option>
+											<option value="Romantic">Romantic</option>
+											<option value="Melancholic">Melancholic</option>
+										</select>
+									</div>
+									<div>
+										<label class="block text-sm font-medium text-gray-700 mb-2">Duration (seconds)</label>
+										<input type="number" name="duration" min="1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="180" value="180"/>
+									</div>
+								</div>
+								<div>
+									<label class="block text-sm font-medium text-gray-700 mb-2">BPM</label>
+									<input type="number" name="bpm" min="1" max="300" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="120"/>
+								</div>
+								<button
+									type="submit"
+									class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200"
+									hx-post="/api/playlist/songs"
+									hx-target="#playlist-container"
+									hx-swap="innerHTML"
+									hx-include="closest form"
+								>
+									Add Song to Playlist
+								</button>
+							</form>
+						</div>
+					</div>
+					<!-- Current Playlist -->
+					<div class="lg:col-span-2">
+						<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+							<div class="flex justify-between items-center mb-4">
+								<h2 class="text-2xl font-bold text-gray-800">🎵 Current Playlist</h2>
+								<div class="flex flex-wrap gap-2">
+									<button
+										class="bg-gray-500 hover:bg-gray-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm"
+										hx-post="/api/playlist/reverse"
+										hx-target="#playlist-container"
+										hx-swap="innerHTML"
+									>
+										🔄 <span class="hidden sm:inline">Reverse</span>
+									</button>
+									<button
+										class="bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm"
+										hx-delete="/api/playlist"
+										hx-target="#playlist-container"
+										hx-swap="innerHTML"
+										hx-confirm="Are you sure you want to clear the entire playlist?"
+									>
+										🗑️ <span class="hidden sm:inline">Clear</span>
+									</button>
+								</div>
+							</div>
+							<!-- Sort Controls -->
+							<div class="mb-4 flex flex-wrap gap-2 items-center">
+								<select id="sort-criteria" class="border border-gray-300 rounded px-2 py-1 text-sm">
+									<option value="title">Title A-Z</option>
+									<option value="artist">Artist A-Z</option>
+									<option value="duration_asc">Duration ↑</option>
+									<option value="duration_desc">Duration ↓</option>
+									<option value="recently_added">Recently Added</option>
+									<option value="rating">Rating</option>
+									<option value="play_count">Play Count</option>
+								</select>
+								<select id="sort-algorithm" class="border border-gray-300 rounded px-2 py-1 text-sm">
+									<option value="merge">Merge Sort</option>
+									<option value="quick">Quick Sort</option>
+									<option value="heap">Heap Sort</option>
+								</select>
+								<button
+									class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+									hx-post="/api/playlist/sort"
+									hx-target="#playlist-container"
+									hx-swap="innerHTML"
+									hx-vals='js:{"criteria": document.getElementById("sort-criteria").value, "algorithm": document.getElementById("sort-algorithm").value}'
+								>
+									🔄 Sort
+								</button>
+								<button
+									class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm"
+									hx-get="/api/playlist/benchmark"
+									hx-target="#notification-area"
+								>
+									⚡ Benchmark
+								</button>
+							</div>
+							<!-- Search -->
+							<div class="mb-4">
+								<div class="flex flex-col sm:flex-row gap-2">
+									<select id="search-type" class="border border-gray-300 rounded px-2 py-1 text-sm">
+										<option value="title">Search by Title</option>
+										<option value="id">Search by ID</option>
+									</select>
+									<input type="text" id="search-query" placeholder="Enter search term..." class="flex-1 border border-gray-300 rounded px-2 py-1 text-sm"/>
+									<button
+										class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+										hx-get="/api/playlist/search"
+										hx-target="#search-results"
+										hx-vals='js:{"type": document.getElementById("search-type").value, "q": document.getElementById("search-query").value}'
+									>
+										🔍 Search
+									</button>
+								</div>
+							</div>
+							<!-- Playlist Items -->
+							<div
+								id="playlist-container"
+								class="space-y-2 max-h-96 overflow-y-auto"
+								hx-get="/api/playlist/html"
+								hx-trigger="load"
+								hx-swap="innerHTML"
+							>
+								<!-- Loading sample data button shown when empty -->
+								<div class="text-center py-8 text-gray-500">
+									<p class="mb-4">Loading playlist...</p>
+								</div>
+							</div>
+							<!-- Search Results -->
+							<div id="search-results" class="mt-4 space-y-2 max-h-64 overflow-y-auto"></div>
+							<!-- Playlist Stats -->
+							<div id="playlist-stats" class="mt-4 p-3 bg-gray-50 rounded">
+								<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+									<div>
+										<div class="font-semibold text-lg" id="song-count">0</div>
+										<div class="text-sm text-gray-600">Songs</div>
+									</div>
+									<div>
+										<div class="font-semibold text-lg" id="total-duration">0:00</div>
+										<div class="text-sm text-gray-600">Duration</div>
+									</div>
+									<div>
+										<div class="font-semibold text-lg" id="avg-rating">0.0</div>
+										<div class="text-sm text-gray-600">Avg Rating</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Music Explorer Tab -->
+			<div id="explorer-tab" class="tab-content hidden">
+				<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+					<h2 class="text-2xl font-bold mb-4 text-gray-800">🌳 Hierarchical Music Explorer</h2>
+					<p class="text-gray-600 mb-6">Navigate your music library by Genre → Subgenre → Mood → Artist</p>
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="explorer-navigation">
+						<!-- Genres -->
+						<div class="border rounded-lg p-4">
+							<h3 class="font-semibold mb-2">🎼 Genres</h3>
+							<div
+								id="genres-list"
+								class="space-y-1 max-h-64 overflow-y-auto"
+								hx-get="/api/explorer/genres/html"
+								hx-trigger="load"
+								hx-swap="innerHTML"
+							>
+								Loading genres...
+							</div>
+						</div>
+						<!-- Subgenres -->
+						<div class="border rounded-lg p-4">
+							<h3 class="font-semibold mb-2">🎵 Subgenres</h3>
+							<div id="subgenres-list" class="space-y-1 max-h-64 overflow-y-auto">
+								<div class="text-gray-500 text-sm">Select a genre first</div>
+							</div>
+						</div>
+						<!-- Moods -->
+						<div class="border rounded-lg p-4">
+							<h3 class="font-semibold mb-2">😊 Moods</h3>
+							<div id="moods-list" class="space-y-1 max-h-64 overflow-y-auto">
+								<div class="text-gray-500 text-sm">Select a subgenre first</div>
+							</div>
+						</div>
+						<!-- Artists -->
+						<div class="border rounded-lg p-4">
+							<h3 class="font-semibold mb-2">👤 Artists</h3>
+							<div id="artists-list" class="space-y-1 max-h-64 overflow-y-auto">
+								<div class="text-gray-500 text-sm">Select a mood first</div>
+							</div>
+						</div>
+					</div>
+					<!-- Current Path -->
+					<div class="mt-6 p-4 bg-blue-50 rounded-lg">
+						<h4 class="font-semibold mb-2">📍 Current Selection:</h4>
+						<div id="explorer-path" class="text-sm text-gray-600">
+							No selection made
+						</div>
+					</div>
+					<!-- Explorer Results -->
+					<div id="explorer-results" class="mt-6">
+						<!-- Songs will be displayed here -->
+					</div>
+				</div>
+			</div>
+			<!-- History & Stats Tab -->
+			<div id="history-tab" class="tab-content hidden">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+					<!-- Playback History -->
+					<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+						<h2 class="text-2xl font-bold mb-4 text-gray-800">📊 Playback History</h2>
+						<button
+							class="mb-4 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+							hx-post="/api/playlist/undo"
+							hx-target="#history-container"
+							hx-swap="outerHTML"
+						>
+							↶ Undo Last Play
+						</button>
+						<div
+							id="history-container"
+							class="space-y-2 max-h-96 overflow-y-auto"
+							hx-get="/api/playlist/history"
+							hx-trigger="load"
+							hx-swap="innerHTML"
+						>
+							<!-- History items will be populated here -->
+						</div>
+					</div>
+					<!-- Statistics -->
+					<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+						<h2 class="text-2xl font-bold mb-4 text-gray-800">📈 Statistics</h2>
+						<div
+							id="statistics-container"
+							hx-get="/api/playlist/stats"
+							hx-trigger="load"
+							hx-swap="innerHTML"
+						>
+							<!-- Statistics will be populated here -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Recommendations Tab -->
+			<div id="recommendations-tab" class="tab-content hidden">
+				<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+					<h2 class="text-2xl font-bold mb-4 text-gray-800">🎯 Smart Recommendations</h2>
+					<p class="text-gray-600 mb-6">AI-powered song recommendations based on your listening history and preferences</p>
+					<button
+						class="mb-6 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg"
+						hx-get="/api/playlist/recommendations"
+						hx-target="#recommendations-container"
+						hx-swap="innerHTML"
+					>
+						🔮 Generate Recommendations
+					</button>
+					<div id="recommendations-container">
+						<!-- Recommendations will be populated here -->
+					</div>
+				</div>
+			</div>
+			<!-- Dashboard Tab -->
+			<div id="dashboard-tab" class="tab-content hidden">
+				<div class="space-y-4 sm:space-y-6 lg:space-y-8">
+					<!-- Dashboard Cards -->
+					<div
+						id="dashboard-stats"
+						hx-get="/api/dashboard/html"
+						hx-trigger="load"
+						hx-swap="innerHTML"
+					>
+						<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+							<div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 sm:p-6 rounded-lg">
+								<h3 class="text-lg font-semibold mb-2">Total Songs</h3>
+								<div class="text-3xl font-bold">Loading...</div>
+							</div>
+							<div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 sm:p-6 rounded-lg">
+								<h3 class="text-lg font-semibold mb-2">Total Duration</h3>
+								<div class="text-3xl font-bold">Loading...</div>
+							</div>
+							<div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 sm:p-6 rounded-lg">
+								<h3 class="text-lg font-semibold mb-2">Unique Artists</h3>
+								<div class="text-3xl font-bold">Loading...</div>
+							</div>
+							<div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 sm:p-6 rounded-lg">
+								<h3 class="text-lg font-semibold mb-2">Genres</h3>
+								<div class="text-3xl font-bold">Loading...</div>
+							</div>
+						</div>
+					</div>
+					<!-- Top 5 Longest Songs -->
+					<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+						<h3 class="text-xl font-bold mb-4 text-gray-800">🎼 Top 5 Longest Songs</h3>
+						<div
+							id="longest-songs-container"
+							hx-get="/api/playlist/stats"
+							hx-trigger="load"
+							hx-swap="innerHTML"
+						>
+							Loading...
+						</div>
+					</div>
+					<!-- Rating Distribution -->
+					<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+						<h3 class="text-xl font-bold mb-4 text-gray-800">⭐ Rating Distribution</h3>
+						<div id="rating-distribution-container">
+							<!-- Will be populated by JavaScript -->
+						</div>
+					</div>
+					<!-- Performance Metrics -->
+					<div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+						<h3 class="text-xl font-bold mb-4 text-gray-800">⚡ Performance Metrics</h3>
+						<div id="performance-metrics-container">
+							<!-- Will be populated by JavaScript -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Notification Container -->
+		<div id="notification-container" class="fixed top-4 right-4 z-50">
+			<!-- Notifications will be added here -->
+		</div>
+		<!-- Minimal JavaScript for tab management and utilities only -->
+		<script>
+			// Tab Management
+			document.addEventListener('DOMContentLoaded', function() {
+				setupTabs();
+				loadDashboardData();
+			});
+
+			function setupTabs() {
+				const tabButtons = document.querySelectorAll('.tab-button');
+				const tabContents = document.querySelectorAll('.tab-content');
+
+				tabButtons.forEach(button => {
+					button.addEventListener('click', () => {
+						const tabId = button.getAttribute('data-tab') + '-tab';
+
+						// Update button states
+						tabButtons.forEach(btn => btn.classList.remove('active', 'border-blue-500', 'text-blue-600'));
+						tabButtons.forEach(btn => btn.classList.add('border-transparent', 'text-gray-500'));
+
+						button.classList.add('active', 'border-blue-500', 'text-blue-600');
+						button.classList.remove('border-transparent', 'text-gray-500');
+
+						// Update content visibility
+						tabContents.forEach(content => content.classList.add('hidden'));
+						document.getElementById(tabId).classList.remove('hidden');
+
+						// Trigger HTMX loads for the active tab
+						const activeTab = document.getElementById(tabId);
+						activeTab.querySelectorAll('[hx-get][hx-trigger*="load"]').forEach(el => {
+							htmx.trigger(el, 'load');
+						});
+					});
+				});
+			}
+
+// Load sample data function for empty playlist
+function loadSampleData() {
+htmx.ajax('POST', '/api/playlist/sample-data', {
+	target: '#playlist-container',
+	swap: 'innerHTML'
+}).then(function() {
+	// After loading sample data, refresh the playlist display
+	htmx.ajax('GET', '/api/playlist/html', {
+		target: '#playlist-container',
+		swap: 'innerHTML'
+	});
+});
+}
+
+			// Dashboard data loading
+			function loadDashboardData() {
+				htmx.ajax('GET', '/api/dashboard/html', {
+					target: '#dashboard-stats',
+					swap: 'innerHTML'
+				});
+			}
+
+			// Utility Functions
+			function formatDuration(seconds) {
+				const minutes = Math.floor(seconds / 60);
+				const remainingSeconds = seconds % 60;
+				return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+			}
+
+			function formatTime(timestamp) {
+				return new Date(timestamp).toLocaleString();
+			}
+		</script>
+	}
+}
