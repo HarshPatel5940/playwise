@@ -92,8 +92,8 @@ func NewSongRatingBST() *SongRatingBST {
 // Time Complexity: O(log n) average, O(n) worst case
 // Space Complexity: O(log n) due to recursion stack
 func (bst *SongRatingBST) InsertSong(song *models.Song, rating int) {
-	if rating < 1 || rating > 5 {
-		return // Invalid rating
+	if song == nil || rating < 1 || rating > 5 {
+		return // Invalid song or rating
 	}
 
 	song.SetRating(rating) // Update song's rating

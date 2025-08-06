@@ -64,16 +64,24 @@ func (pe *PlaylistEngine) AddSong(title, artist, album, genre, subgenre, mood st
 		return fmt.Errorf("title and artist are required")
 	}
 
+	// Check if song already exists by title and artist
+	normalizedTitle := strings.TrimSpace(strings.ToLower(title))
+	normalizedArtist := strings.TrimSpace(strings.ToLower(artist))
+
+	// Check existing songs for duplicates
+	existingSongs := pe.currentPlaylist.ToSlice()
+	for _, existingSong := range existingSongs {
+		if strings.ToLower(existingSong.Title) == normalizedTitle &&
+			strings.ToLower(existingSong.Artist) == normalizedArtist {
+			return fmt.Errorf("song already exists in playlist")
+		}
+	}
+
 	// Generate unique ID for the song
 	songID := pe.generateSongID(title, artist)
 
 	// Create new song
 	song := models.NewSong(songID, title, artist, album, genre, subgenre, mood, duration, bpm)
-
-	// Check if song already exists
-	if pe.songLookup.Contains(songID) {
-		return fmt.Errorf("song already exists in playlist")
-	}
 
 	// Add to playlist (doubly linked list)
 	pe.currentPlaylist.AddSong(song)
