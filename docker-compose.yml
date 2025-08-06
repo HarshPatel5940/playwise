@@ -17,32 +17,32 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_SCHEMA: ${DB_SCHEMA}
     depends_on:
-      psql_bp:
+      postgres:
         condition: service_healthy
     networks:
       - playwise
-  psql_bp:
-    image: postgres:latest
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  postgres:
+    container_name: playwise-postgres
+    image: postgres:13
+    restart: always
     ports:
-      - "${DB_PORT}:5432"
+      - "5432:5432"
     volumes:
-      - psql_volume_bp:/var/lib/postgresql/data
+      - postgres_data:/data
+    environment:
+      POSTGRES_USER: "HarshPatel"
+      POSTGRES_PASSWORD: "Password"
+      POSTGRES_DB: "playwise"
     healthcheck:
-      test:
-        ["CMD-SHELL", "sh -c 'pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}'"]
-      interval: 5s
+      test: ["CMD", "pg_isready"]
+      interval: 10s
       timeout: 5s
-      retries: 3
-      start_period: 15s
+      retries: 5
     networks:
       - playwise
 
 volumes:
-  psql_volume_bp:
+  postgres_data:
 networks:
   playwise:
